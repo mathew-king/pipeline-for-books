@@ -1,0 +1,64 @@
+{
+  "currentBook": "The Unmasked Man",
+  "updated": "2026-08-27",
+  "steps": {
+    "step-vlhp30": {
+      "status": "done",
+      "checks": {
+        "tekst w języku holenderskim (folder \"zroldo-02\", nazwa pliku: \"source-the-unmasked-man-nl\")": true,
+        "tekst w języku angielskim (folder \"zroldo-02\" nazwa pliku: \"source-the-unmasked-man-en\")": true,
+        "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.png\")": true,
+        "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.pdf\")": true
+      }
+    },
+    "s1-1": {
+      "status": "done",
+      "checks": {
+        "EN -> plik source-en.md powstał": true,
+        "NL -> plik source-nl.md powstał": true
+      }
+    },
+    "step-j8qj45": {
+      "status": "done"
+    },
+    "step-3smra9": {
+      "status": "done"
+    },
+    "s1-2": {
+      "status": "done"
+    },
+    "s1-3": {
+      "status": "done"
+    },
+    "step-92fhxo": {
+      "status": "done"
+    },
+    "step-u9da0s": {
+      "status": "done"
+    },
+    "s2-1": {
+      "status": "done"
+    },
+    "s2-2": {
+      "status": "done"
+    },
+    "s2-4": {
+      "status": "done"
+    },
+    "s2-3": {
+      "status": "done",
+      "checks": {
+        "przejrzane wszystkie rozdziały": true
+      }
+    },
+    "s2-6": {
+      "status": "done",
+      "checks": {
+        "liczba zgodna z etapem 1": true
+      }
+    },
+    "s3-1": {
+      "status": "doing"
+    }
+  }
+}

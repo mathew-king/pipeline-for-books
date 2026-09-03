@@ -1,10 +1,11 @@
 {
-  "name": "template",
+  "name": "pipeline-for-books",
   "version": "1.0.0",
-  "description": "Brand new template for a new website project!",
+  "description": "Interaktywny pipeline wydawniczy: od angielskiego manuskryptu do wydanej ksiazki.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "node --check app.js && node --check public/js/pipeline.js && node --check public/js/storage.js"
   },
   "keywords": [],
   "author": "",

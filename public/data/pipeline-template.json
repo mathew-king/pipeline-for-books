@@ -1,0 +1,1455 @@
+{
+  "meta": {
+    "templateVersion": "1.0.0",
+    "title": "Pipeline wydawniczy",
+    "subtitle": "Od angielskiego manuskryptu do wydanej książki",
+    "currentBook": "",
+    "updated": "2026-08-27"
+  },
+  "stages": [
+    {
+      "id": "s0",
+      "num": "0",
+      "title": "Pliki od autora",
+      "short": "Źródło",
+      "input": "materiały od autora",
+      "output": "zrodlo-02",
+      "doc": "docs/01-proces.md",
+      "steps": [
+        {
+          "id": "step-vlhp30",
+          "title": "zgromadź pliki",
+          "desc": "Zbieramy wszystkie potrzebne pliki w jedno miejsce. Zapisujemy w takiej formie, w jakiej Tom je przesłał. Dla porządku można zmienić tytuły plików.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "tekst w języku holenderskim (folder \"zroldo-02\", nazwa pliku: \"source-the-unmasked-man-nl\")",
+              "d": false
+            },
+            {
+              "t": "tekst w języku angielskim (folder \"zroldo-02\" nazwa pliku: \"source-the-unmasked-man-en\")",
+              "d": false
+            },
+            {
+              "t": "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.png\")",
+              "d": false
+            },
+            {
+              "t": "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.pdf\")",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "notes": "",
+          "factory": {
+            "title": "zgromadź pliki",
+            "desc": "Zbieramy wszystkie potrzebne pliki w jedno miejsce. Zapisujemy w takiej formie, w jakiej Tom je przesłał. Dla porządku można zmienić tytuły plików.",
+            "cmd": "",
+            "checks": [
+              "tekst w języku holenderskim (folder \"zroldo-02\", nazwa pliku: \"source-the-unmasked-man-nl\")",
+              "tekst w języku angielskim (folder \"zroldo-02\" nazwa pliku: \"source-the-unmasked-man-en\")",
+              "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.png\")",
+              "okładka książki (folder \"grafiki-03\" nazwa pliku \"the-unmasked-man-cover.pdf\")"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "s1",
+      "num": "1",
+      "title": "Konwersja Word → Markdown",
+      "short": "Konwersja",
+      "input": "zrodla/*.docx",
+      "output": "source-en.md",
+      "doc": "docs/01-proces.md",
+      "steps": [
+        {
+          "id": "s1-1",
+          "title": "Konwersja pandokiem z --wrap=none",
+          "desc": "Bez --wrap=none pandoc łamie akapity losowo, co psuje późniejsze zestawianie tłumaczenia z oryginałem.",
+          "cmd": "pandoc \"source-the-unmasked-man-en.docx\" -o source-en.md --wrap=none",
+          "checks": [
+            {
+              "t": "EN -> plik source-en.md powstał",
+              "d": false
+            },
+            {
+              "t": "NL -> plik source-nl.md powstał",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Konwersja pandokiem z --wrap=none",
+            "desc": "Bez --wrap=none pandoc łamie akapity losowo, co psuje późniejsze zestawianie tłumaczenia z oryginałem.",
+            "cmd": "pandoc \"source-the-unmasked-man-en.docx\" -o source-en.md --wrap=none",
+            "checks": [
+              "EN -> plik source-en.md powstał",
+              "NL -> plik source-nl.md powstał"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "step-j8qj45",
+          "title": "Usuń puste linie",
+          "desc": "Usuwamy więcej niż dwie puste linie obok siebie z całego dokumentu.",
+          "cmd": "#!/usr/bin/env python3\"\"\"Usuwa nadmiarowe puste linie - zostawia maksymalnie jeden enter między blokami tekstu.Zamienia 2+ puste linie na 1 pustą linię.\"\"\"def remove_multiple_empty_lines(input_file, output_file):    with open(input_file, 'r', encoding='utf-8') as f:        lines = f.readlines()    result = []    empty_count = 0    for line in lines:        # Sprawdź czy linia jest pusta        if line.strip() == '':            empty_count += 1            # Dodaj linię tylko jeśli to pierwszy enter            if empty_count == 1:                result.append(line)        else:            # Linia zawiera tekst, resetuj licznik            empty_count = 0            result.append(line)    with open(output_file, 'w', encoding='utf-8') as f:        f.writelines(result)    print(f\"✓ Usunięto nadmiarowe puste linie\")    print(f\"✓ Plik zapisany: {output_file}\")if __name__ == '__main__':    input_file = '../02-zrodlo/source-nl.md'    output_file = '../02-zrodlo/source-nl.md'    remove_multiple_empty_lines(input_file, output_file)",
+          "checks": [],
+          "status": "todo",
+          "factory": {
+            "title": "Usuń puste linie",
+            "desc": "Usuwamy więcej niż dwie puste linie obok siebie z całego dokumentu.",
+            "cmd": "#!/usr/bin/env python3\"\"\"Usuwa nadmiarowe puste linie - zostawia maksymalnie jeden enter między blokami tekstu.Zamienia 2+ puste linie na 1 pustą linię.\"\"\"def remove_multiple_empty_lines(input_file, output_file):    with open(input_file, 'r', encoding='utf-8') as f:        lines = f.readlines()    result = []    empty_count = 0    for line in lines:        # Sprawdź czy linia jest pusta        if line.strip() == '':            empty_count += 1            # Dodaj linię tylko jeśli to pierwszy enter            if empty_count == 1:                result.append(line)        else:            # Linia zawiera tekst, resetuj licznik            empty_count = 0            result.append(line)    with open(output_file, 'w', encoding='utf-8') as f:        f.writelines(result)    print(f\"✓ Usunięto nadmiarowe puste linie\")    print(f\"✓ Plik zapisany: {output_file}\")if __name__ == '__main__':    input_file = '../02-zrodlo/source-nl.md'    output_file = '../02-zrodlo/source-nl.md'    remove_multiple_empty_lines(input_file, output_file)",
+            "checks": []
+          }
+        },
+        {
+          "id": "step-3smra9",
+          "title": "Usuń puste nagłówki",
+          "desc": "Usuwamy więcej niż dwie puste linie obok siebie z całego dokumentu.",
+          "cmd": "#!/usr/bin/env python3\"\"\"Usuwa puste nagłówki z pliku markdown:- linie zawierające tylko '# '- linie zawierające tylko '## '- linie zawierające tylko '### '\"\"\"def remove_empty_headers(input_file, output_file):    with open(input_file, 'r', encoding='utf-8') as f:        lines = f.readlines()    result = []    removed_count = 0    for line in lines:        # Sprawdź czy linia to pusty nagłówek        if line.strip() in ['#', '##', '###', '####']:            removed_count += 1            continue        result.append(line)    with open(output_file, 'w', encoding='utf-8') as f:        f.writelines(result)    print(f\"✓ Usunięto {removed_count} pustych nagłówków\")    print(f\"✓ Plik zapisany: {output_file}\")if __name__ == '__main__':    input_file = '../02-zrodlo/source-nl.md'    output_file = '../02-zrodlo/source-nl.md'    remove_empty_headers(input_file, output_file)",
+          "checks": [],
+          "status": "todo",
+          "factory": {
+            "title": "Usuń puste nagłówki",
+            "desc": "Usuwamy więcej niż dwie puste linie obok siebie z całego dokumentu.",
+            "cmd": "#!/usr/bin/env python3\"\"\"Usuwa puste nagłówki z pliku markdown:- linie zawierające tylko '# '- linie zawierające tylko '## '- linie zawierające tylko '### '\"\"\"def remove_empty_headers(input_file, output_file):    with open(input_file, 'r', encoding='utf-8') as f:        lines = f.readlines()    result = []    removed_count = 0    for line in lines:        # Sprawdź czy linia to pusty nagłówek        if line.strip() in ['#', '##', '###', '####']:            removed_count += 1            continue        result.append(line)    with open(output_file, 'w', encoding='utf-8') as f:        f.writelines(result)    print(f\"✓ Usunięto {removed_count} pustych nagłówków\")    print(f\"✓ Plik zapisany: {output_file}\")if __name__ == '__main__':    input_file = '../02-zrodlo/source-nl.md'    output_file = '../02-zrodlo/source-nl.md'    remove_empty_headers(input_file, output_file)",
+            "checks": []
+          }
+        },
+        {
+          "id": "s1-2",
+          "title": "Sprawdź nagłówki",
+          "desc": "Do końca procesu obowiązuje: # rozdział, ## podrozdział, ### poziom niżej.",
+          "cmd": "grep -n '^#' source-en.md | head -40",
+          "checks": [
+            {
+              "t": "brak nagłówków poza schematem",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Sprawdź nagłówki",
+            "desc": "Do końca procesu obowiązuje: # rozdział, ## podrozdział, ### poziom niżej.",
+            "cmd": "grep -n '^#' source-en.md | head -40",
+            "checks": [
+              "brak nagłówków poza schematem"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s1-3",
+          "title": "Policz nagłówki (pojedyncze hastagi)",
+          "desc": "Ta liczba jest punktem kontrolnym na każdym kolejnym etapie, aż do EPUB-a.",
+          "cmd": "grep -c '^# ' source-en.md",
+          "checks": [
+            {
+              "t": "liczba rozdziałów zapisana w notatce książki",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Policz nagłówki (pojedyncze hastagi)",
+            "desc": "Ta liczba jest punktem kontrolnym na każdym kolejnym etapie, aż do EPUB-a.",
+            "cmd": "grep -c '^# ' source-en.md",
+            "checks": [
+              "liczba rozdziałów zapisana w notatce książki"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "step-92fhxo",
+          "title": "Pożądek w nagłówkach z calude",
+          "desc": "Komenda dla claude żeby połączył numer oraz tytuł rozdziału",
+          "cmd": "\nCel: przetworzyć source-nl.md tak, by każdy tytuł rozdziału miał format: [jeden hastag] Hoofdstuk [n]: 'Nazwa rozdziału' wszystko w jednej linii.\nMetoda: wyszukujesz pierwszy Hoofdstuk i poprawiasz jego nagłówek raportując swój efekt, ja potwierdzam i robisz kolejny rozdział. od momentu w ktorym skonczyleś.\nW pliku słowo \"Hoofdstuk\" i sam tytuł mogą występować obok siebie jako dwie osobne linie nagłówkowe - należy je połączyć w jedną linię w docelowym formacie.\nŹródło numeru i tytułu: znaleźć je w treści dokumentu — nie wymyślać ani nie tłumaczyć niczego.\nNie ruszać: żadnego tekstu, treści, tłumaczeń, redakcji — zmieniam wyłącznie formę zapisu nagłówków rozdziałów.\nNumeracja: rosnąca, ciągła, bez duplikatów i bez przeskoków — jeśli dwa różne rozdziały mają ten sam numer, nadać kolejny poprawny numer zgodnie z kolejnością występowania w pliku.\nOutput: zapisać wynik z powrotem do tego samego pliku (source-nl.md), nadpisując go.\nNa koniec odpowiedzi: napisać tylko \"zrobione\", nic więcej.usuń wszystkie hastagi ktore nie znajduja sie w lini z nowym rozdzialem, wstepem lub posłowiem",
+          "checks": [],
+          "status": "todo",
+          "factory": {
+            "title": "Pożądek w nagłówkach z calude",
+            "desc": "Komenda dla claude żeby połączył numer oraz tytuł rozdziału",
+            "cmd": "\nCel: przetworzyć source-nl.md tak, by każdy tytuł rozdziału miał format: [jeden hastag] Hoofdstuk [n]: 'Nazwa rozdziału' wszystko w jednej linii.\nMetoda: wyszukujesz pierwszy Hoofdstuk i poprawiasz jego nagłówek raportując swój efekt, ja potwierdzam i robisz kolejny rozdział. od momentu w ktorym skonczyleś.\nW pliku słowo \"Hoofdstuk\" i sam tytuł mogą występować obok siebie jako dwie osobne linie nagłówkowe - należy je połączyć w jedną linię w docelowym formacie.\nŹródło numeru i tytułu: znaleźć je w treści dokumentu — nie wymyślać ani nie tłumaczyć niczego.\nNie ruszać: żadnego tekstu, treści, tłumaczeń, redakcji — zmieniam wyłącznie formę zapisu nagłówków rozdziałów.\nNumeracja: rosnąca, ciągła, bez duplikatów i bez przeskoków — jeśli dwa różne rozdziały mają ten sam numer, nadać kolejny poprawny numer zgodnie z kolejnością występowania w pliku.\nOutput: zapisać wynik z powrotem do tego samego pliku (source-nl.md), nadpisując go.\nNa koniec odpowiedzi: napisać tylko \"zrobione\", nic więcej.usuń wszystkie hastagi ktore nie znajduja sie w lini z nowym rozdzialem, wstepem lub posłowiem",
+            "checks": []
+          }
+        },
+        {
+          "id": "step-u9da0s",
+          "title": "Wklej introduction do pliku głównego tekstem",
+          "desc": "",
+          "cmd": "",
+          "checks": [],
+          "status": "todo",
+          "factory": {
+            "title": "Wklej introduction do pliku głównego tekstem",
+            "desc": "",
+            "cmd": "",
+            "checks": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "num": "2",
+      "title": "Czyszczenie tekstu",
+      "short": "Czyszczenie",
+      "input": "source-en.md",
+      "output": "source-en.md (czysty)",
+      "doc": "docs/01-proces.md",
+      "steps": [
+        {
+          "id": "s2-1",
+          "title": "Usuń spis treści wklejony jako tekst",
+          "desc": "Spisu treści nigdy nie tłumaczymy. Wygeneruje się sam na etapie składu, z prawdziwymi numerami stron.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "brak spisu treści w treści",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Usuń spis treści wklejony jako tekst",
+            "desc": "Spisu treści nigdy nie tłumaczymy. Wygeneruje się sam na etapie składu, z prawdziwymi numerami stron.",
+            "cmd": "",
+            "checks": [
+              "brak spisu treści w treści"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s2-2",
+          "title": "Usuń powtórzone strony tytułowe",
+          "desc": "W plikach od autora strona tytułowa występuje często 2–3 razy.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "jedna strona tytułowa albo żadna",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Usuń powtórzone strony tytułowe",
+            "desc": "W plikach od autora strona tytułowa występuje często 2–3 razy.",
+            "cmd": "",
+            "checks": [
+              "jedna strona tytułowa albo żadna"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s2-4",
+          "title": "Usuń żywą paginę i numery stron",
+          "desc": "Artefakty konwersji, zwłaszcza gdy źródło przeszło kiedyś przez PDF.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "brak powtarzalnych nagłówków stron",
+              "d": false
+            },
+            {
+              "t": "brak osamotnionych liczb",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Usuń żywą paginę i numery stron",
+            "desc": "Artefakty konwersji, zwłaszcza gdy źródło przeszło kiedyś przez PDF.",
+            "cmd": "",
+            "checks": [
+              "brak powtarzalnych nagłówków stron",
+              "brak osamotnionych liczb"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s2-3",
+          "title": "Wyodrębnij i usuń notatki autora do samego siebie oraz rozmowy AI",
+          "desc": "Wplecione w treść rozdziału uwagi warsztatowe. Nie tłumaczymy ich.",
+          "cmd": "Dodaję uwzględnienie języka do instrukcji:\nZADANIE: Przeszukaj plik source-nl.md (tekst może być w języku angielskim, niderlandzkim lub obu jednocześnie) i znajdź fragmenty niepasujące do głównej narracji książki.\nSzukane elementy (dotyczy obu języków, np. angielskie \"chapter\" / niderlandzkie \"hoofdstuk\"):\n\nEdytorskie uwagi i komentarze (\"I think...\", \"I would suggest...\" / \"Ik denk...\", \"Ik zou voorstellen...\")\nSłowo \"chapter\"/\"hoofdstuk\" jako ślad rozmowy z AI o książce\nNotatki autora w nawiasach/cudzysłowach (\"NOTE:\", \"[Author note]\", \"EDITOR:\" / \"NOOT:\", \"[Auteursnotitie]\", \"REDACTEUR:\")\nRozmowy z AI o pisaniu (\"You could...\", \"This would work better if...\" / \"Je zou kunnen...\", \"Dit zou beter werken als...\")\nPytania wpisane zamiast stwierdzeń w tekście głównym\nMetauwagi o samej książce zamiast treści książki\n\nWarunki rozpoznania (w obu językach):\n\nTekst zwraca się do autora w drugiej osobie (\"your book\", \"your father\" / \"jouw boek\", \"jouw vader\")\nZawiera słowa typu: \"suggest\", \"recommend\", \"could\", \"would be better\" / \"voorstellen\", \"aanbevelen\", \"zou kunnen\", \"zou beter zijn\"\nBrzmi jak porada, nie jak część narracji\nTon jest bardziej edytorski/instruujący niż reszta tekstu\n\nKroki działania:\n\nPrzeczytaj tekst uważnie, niezależnie od języka fragmentu\nWyodrębnij fragmenty niepasujące\nOznacz każdy fragment numerem linii początkowej i końcowej (np. \"linie 142-144\")\nUtwórz plik \"[oryginalna_nazwa]-komentarze.md\" w tym samym folderze i wklej tam wszystkie fragmenty z oznaczeniami linii\nUsuń te fragmenty z pliku roboczego (oryginału)\nPotwierdź liczbę znalezionych fragmentów i miejsce ich zapisania",
+          "checks": [
+            {
+              "t": "przejrzane wszystkie rozdziały",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wyodrębnij i usuń notatki autora do samego siebie oraz rozmowy AI",
+            "desc": "Wplecione w treść rozdziału uwagi warsztatowe. Nie tłumaczymy ich.",
+            "cmd": "Dodaję uwzględnienie języka do instrukcji:\nZADANIE: Przeszukaj plik source-nl.md (tekst może być w języku angielskim, niderlandzkim lub obu jednocześnie) i znajdź fragmenty niepasujące do głównej narracji książki.\nSzukane elementy (dotyczy obu języków, np. angielskie \"chapter\" / niderlandzkie \"hoofdstuk\"):\n\nEdytorskie uwagi i komentarze (\"I think...\", \"I would suggest...\" / \"Ik denk...\", \"Ik zou voorstellen...\")\nSłowo \"chapter\"/\"hoofdstuk\" jako ślad rozmowy z AI o książce\nNotatki autora w nawiasach/cudzysłowach (\"NOTE:\", \"[Author note]\", \"EDITOR:\" / \"NOOT:\", \"[Auteursnotitie]\", \"REDACTEUR:\")\nRozmowy z AI o pisaniu (\"You could...\", \"This would work better if...\" / \"Je zou kunnen...\", \"Dit zou beter werken als...\")\nPytania wpisane zamiast stwierdzeń w tekście głównym\nMetauwagi o samej książce zamiast treści książki\n\nWarunki rozpoznania (w obu językach):\n\nTekst zwraca się do autora w drugiej osobie (\"your book\", \"your father\" / \"jouw boek\", \"jouw vader\")\nZawiera słowa typu: \"suggest\", \"recommend\", \"could\", \"would be better\" / \"voorstellen\", \"aanbevelen\", \"zou kunnen\", \"zou beter zijn\"\nBrzmi jak porada, nie jak część narracji\nTon jest bardziej edytorski/instruujący niż reszta tekstu\n\nKroki działania:\n\nPrzeczytaj tekst uważnie, niezależnie od języka fragmentu\nWyodrębnij fragmenty niepasujące\nOznacz każdy fragment numerem linii początkowej i końcowej (np. \"linie 142-144\")\nUtwórz plik \"[oryginalna_nazwa]-komentarze.md\" w tym samym folderze i wklej tam wszystkie fragmenty z oznaczeniami linii\nUsuń te fragmenty z pliku roboczego (oryginału)\nPotwierdź liczbę znalezionych fragmentów i miejsce ich zapisania",
+            "checks": [
+              "przejrzane wszystkie rozdziały"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s2-6",
+          "title": "Kontrola: liczba i kolejność rozdziałów bez zmian",
+          "desc": "Nie ruszamy kolejności, liczby ani tytułów rozdziałów, ćwiczeń i historii klientów.",
+          "cmd": "grep -c '^# ' source-en.md",
+          "checks": [
+            {
+              "t": "liczba zgodna z etapem 1",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Kontrola: liczba i kolejność rozdziałów bez zmian",
+            "desc": "Nie ruszamy kolejności, liczby ani tytułów rozdziałów, ćwiczeń i historii klientów.",
+            "cmd": "grep -c '^# ' source-en.md",
+            "checks": [
+              "liczba zgodna z etapem 1"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "num": "3",
+      "title": "Tłumaczenie na polski",
+      "short": "Tłumaczenie",
+      "input": "source-en.md",
+      "output": "source-pl.md",
+      "doc": "docs/02-tlumaczenie.md",
+      "steps": [
+        {
+          "id": "s3-1",
+          "title": "Przygotuj prompt i model",
+          "desc": "Model: Opus 5 (claude-opus-5). Prompt: templates/prompt-tlumaczenie.md plus wytyczne z docs/04-glos-autora.md wklejone modelowi.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "prompt zawiera wytyczne głosu autora",
+              "d": false
+            },
+            {
+              "t": "model = claude-opus-5",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przygotuj prompt i model",
+            "desc": "Model: Opus 5 (claude-opus-5). Prompt: templates/prompt-tlumaczenie.md plus wytyczne z docs/04-glos-autora.md wklejone modelowi.",
+            "cmd": "",
+            "checks": [
+              "prompt zawiera wytyczne głosu autora",
+              "model = claude-opus-5"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s3-2",
+          "title": "Przeczytaj 1000–2000 słów oryginału przed startem",
+          "desc": "Rozpoznanie tonu, wzorców zdań, słownictwa, tempa i języka duchowo-kulturowego. Bez tego model wyrównuje styl do średniej.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "ton i wzorce opisane w notatce książki",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przeczytaj 1000–2000 słów oryginału przed startem",
+            "desc": "Rozpoznanie tonu, wzorców zdań, słownictwa, tempa i języka duchowo-kulturowego. Bez tego model wyrównuje styl do średniej.",
+            "cmd": "",
+            "checks": [
+              "ton i wzorce opisane w notatce książki"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s3-3",
+          "title": "Tłumacz rozdział po rozdziale",
+          "desc": "Nigdy cała książka naraz. Model traci rytm i zaczyna streszczać pod koniec. Jeden rozdział to jedno zadanie.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "każdy rozdział osobno",
+              "d": false
+            },
+            {
+              "t": "postęp odnotowany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Tłumacz rozdział po rozdziale",
+            "desc": "Nigdy cała książka naraz. Model traci rytm i zaczyna streszczać pod koniec. Jeden rozdział to jedno zadanie.",
+            "cmd": "",
+            "checks": [
+              "każdy rozdział osobno",
+              "postęp odnotowany"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s3-4",
+          "title": "Pilnuj myślników od razu",
+          "desc": "Angielskie word—word (em dash bez spacji) idzie na polskie słowo – słowo (półpauza ze spacjami z obu stron). Poprawka całego tekstu na końcu jest bolesna.",
+          "cmd": "grep -c '—' source-pl.md",
+          "checks": [
+            {
+              "t": "brak em dashy w polskim tekście",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Pilnuj myślników od razu",
+            "desc": "Angielskie word—word (em dash bez spacji) idzie na polskie słowo – słowo (półpauza ze spacjami z obu stron). Poprawka całego tekstu na końcu jest bolesna.",
+            "cmd": "grep -c '—' source-pl.md",
+            "checks": [
+              "brak em dashy w polskim tekście"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s3-5",
+          "title": "Nie skracaj, nie wygładzaj, nie „poprawiaj” stylu",
+          "desc": "Fragmenty zdań, powtórzenia dla efektu i pytania retoryczne zostają. Zasada: polerować, nie przepisywać.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "długość tekstu porównywalna z oryginałem",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Nie skracaj, nie wygładzaj, nie „poprawiaj” stylu",
+            "desc": "Fragmenty zdań, powtórzenia dla efektu i pytania retoryczne zostają. Zasada: polerować, nie przepisywać.",
+            "cmd": "",
+            "checks": [
+              "długość tekstu porównywalna z oryginałem"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s3-6",
+          "title": "Zebrane pytania wyślij Tomowi jedną paczką",
+          "desc": "Wszystkie [[TODO autor: ...]] w jednym miejscu, jedna wiadomość. Dopóki nierozstrzygnięte, tekst nie idzie do korekty.",
+          "cmd": "grep -n 'TODO autor' source-pl.md",
+          "checks": [
+            {
+              "t": "paczka wysłana",
+              "d": false
+            },
+            {
+              "t": "odpowiedzi otrzymane",
+              "d": false
+            },
+            {
+              "t": "znaczniki usunięte z tekstu",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zebrane pytania wyślij Tomowi jedną paczką",
+            "desc": "Wszystkie [[TODO autor: ...]] w jednym miejscu, jedna wiadomość. Dopóki nierozstrzygnięte, tekst nie idzie do korekty.",
+            "cmd": "grep -n 'TODO autor' source-pl.md",
+            "checks": [
+              "paczka wysłana",
+              "odpowiedzi otrzymane",
+              "znaczniki usunięte z tekstu"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "step-c9gykf",
+          "title": "Oznacz niejasne miejsca jako [[TODO autor]] - to bedzie next step",
+          "desc": "Błędy merytoryczne i niejasne zdania: zostawiamy oryginał i dopisujemy [[TODO autor: ...]]. Nigdy nie zgadujemy.",
+          "cmd": "grep -n 'TODO autor' source-en.md",
+          "checks": [
+            {
+              "t": "każda wątpliwość ma znacznik",
+              "d": false
+            }
+          ],
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "num": "4",
+      "title": "Kontrola naturalności",
+      "short": "Naturalność",
+      "input": "source-pl.md",
+      "output": "source-pl.md + lista poprawek",
+      "doc": "docs/03-kontrola-naturalnosci.md",
+      "steps": [
+        {
+          "id": "s4-1",
+          "title": "Przejrzyj raz w całości listę 344 poprawek wydawcy",
+          "desc": "reference/lista-poprawek-mojmozg-20260730.txt, format kontekst/BYŁO/JEST. Poprzednia książka wyglądała na gotową, a korekta znalazła 344 błędy językowe.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "lista przeczytana przed pierwszą własną korektą",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przejrzyj raz w całości listę 344 poprawek wydawcy",
+            "desc": "reference/lista-poprawek-mojmozg-20260730.txt, format kontekst/BYŁO/JEST. Poprzednia książka wyglądała na gotową, a korekta znalazła 344 błędy językowe.",
+            "cmd": "",
+            "checks": [
+              "lista przeczytana przed pierwszą własną korektą"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s4-2",
+          "title": "Zrób osobny przebieg, nie w trakcie tłumaczenia",
+          "desc": "Przy tłumaczeniu model mimowolnie idzie za angielskim zdaniem. Kontrola musi być oddzielnym czytaniem po całości.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "przebieg wykonany po zakończeniu tłumaczenia",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zrób osobny przebieg, nie w trakcie tłumaczenia",
+            "desc": "Przy tłumaczeniu model mimowolnie idzie za angielskim zdaniem. Kontrola musi być oddzielnym czytaniem po całości.",
+            "cmd": "",
+            "checks": [
+              "przebieg wykonany po zakończeniu tłumaczenia"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s4-3",
+          "title": "Czytaj polski tekst bez zaglądania do angielskiego",
+          "desc": "Do oryginału wracamy tylko, gdy coś nie ma sensu. Jeśli zdanie jest dziwne i dopiero angielski wyjaśnia dlaczego, piszemy je od nowa, nie poprawiamy punktowo.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "rozdział po rozdziale",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Czytaj polski tekst bez zaglądania do angielskiego",
+            "desc": "Do oryginału wracamy tylko, gdy coś nie ma sensu. Jeśli zdanie jest dziwne i dopiero angielski wyjaśnia dlaczego, piszemy je od nowa, nie poprawiamy punktowo.",
+            "cmd": "",
+            "checks": [
+              "rozdział po rozdziale"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s4-4",
+          "title": "Przejdź siedem kategorii błędów",
+          "desc": "Zamknięta lista tego, co realnie wychodzi w tekstach po modelu.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "kalki z angielskiego („na bardziej pozytywnej nocie”, „fokus”, „lokalnie”)",
+              "d": false
+            },
+            {
+              "t": "angielska strona bierna zamieniona na czynną albo bezosobową",
+              "d": false
+            },
+            {
+              "t": "zgodność rodzaju i przypadku (najczęstszy pojedynczy błąd)",
+              "d": false
+            },
+            {
+              "t": "zbędne rusztowanie zdania („Ponieważ wiedza o tym, że…” → „Bo…”)",
+              "d": false
+            },
+            {
+              "t": "zbyt dosłowne kolokacje („patrzą w górę” → „podnosili wzrok”)",
+              "d": false
+            },
+            {
+              "t": "terminologia fachowa i nazwiska sprawdzone pojedynczo („poliwagusowa” → „poliwagalna”)",
+              "d": false
+            },
+            {
+              "t": "zwykłe literówki",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przejdź siedem kategorii błędów",
+            "desc": "Zamknięta lista tego, co realnie wychodzi w tekstach po modelu.",
+            "cmd": "",
+            "checks": [
+              "kalki z angielskiego („na bardziej pozytywnej nocie”, „fokus”, „lokalnie”)",
+              "angielska strona bierna zamieniona na czynną albo bezosobową",
+              "zgodność rodzaju i przypadku (najczęstszy pojedynczy błąd)",
+              "zbędne rusztowanie zdania („Ponieważ wiedza o tym, że…” → „Bo…”)",
+              "zbyt dosłowne kolokacje („patrzą w górę” → „podnosili wzrok”)",
+              "terminologia fachowa i nazwiska sprawdzone pojedynczo („poliwagusowa” → „poliwagalna”)",
+              "zwykłe literówki"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s4-5",
+          "title": "Prowadź własną listę poprawek kontekst/BYŁO/JEST",
+          "desc": "Ta lista karmi dokumentację na przyszłość i pokazuje, czy ten sam błąd wraca przy następnej książce.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "lista zapisana w repo",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Prowadź własną listę poprawek kontekst/BYŁO/JEST",
+            "desc": "Ta lista karmi dokumentację na przyszłość i pokazuje, czy ten sam błąd wraca przy następnej książce.",
+            "cmd": "",
+            "checks": [
+              "lista zapisana w repo"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "num": "5",
+      "title": "Korekta językowa wydawcy",
+      "short": "Korekta",
+      "input": "source-pl.md",
+      "output": "treść zredagowana",
+      "doc": "docs/03-kontrola-naturalnosci.md",
+      "steps": [
+        {
+          "id": "s5-1",
+          "title": "Przekaż tekst do korekty człowiekowi",
+          "desc": "Ten etap wykonuje człowiek zewnętrznie, nie model. To on wyłapał 344 poprawki przy poprzedniej książce.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "tekst wysłany",
+              "d": false
+            },
+            {
+              "t": "termin ustalony",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przekaż tekst do korekty człowiekowi",
+            "desc": "Ten etap wykonuje człowiek zewnętrznie, nie model. To on wyłapał 344 poprawki przy poprzedniej książce.",
+            "cmd": "",
+            "checks": [
+              "tekst wysłany",
+              "termin ustalony"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s5-2",
+          "title": "Wprowadź poprawki do źródła",
+          "desc": "Poprawki wracają jako lista i wchodzą do pliku markdown, który idzie dalej do składu.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "wszystkie pozycje z listy rozpatrzone",
+              "d": false
+            },
+            {
+              "t": "sporne skonsultowane",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wprowadź poprawki do źródła",
+            "desc": "Poprawki wracają jako lista i wchodzą do pliku markdown, który idzie dalej do składu.",
+            "cmd": "",
+            "checks": [
+              "wszystkie pozycje z listy rozpatrzone",
+              "sporne skonsultowane"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s5-3",
+          "title": "Dopisz wnioski do docs/",
+          "desc": "Nowa wiedza wraca do docs/. Jeśli ustalenie będzie prawdą także przy następnej książce, ma trafić do odpowiedniego pliku procesu.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "docs/ zaktualizowane",
+              "d": false
+            },
+            {
+              "t": "szablon pipeline zaktualizowany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Dopisz wnioski do docs/",
+            "desc": "Nowa wiedza wraca do docs/. Jeśli ustalenie będzie prawdą także przy następnej książce, ma trafić do odpowiedniego pliku procesu.",
+            "cmd": "",
+            "checks": [
+              "docs/ zaktualizowane",
+              "szablon pipeline zaktualizowany"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "num": "6",
+      "title": "Skład: PDF do druku i EPUB",
+      "short": "Skład",
+      "input": "body.typ",
+      "output": "out.pdf + out.epub",
+      "doc": "docs/05-sklad-i-kdp.md",
+      "steps": [
+        {
+          "id": "s6-1",
+          "title": "Wpisz do zlecenia składu cztery ustalenia z góry",
+          "desc": "Braki ustalone na poprzedniej książce. Bez nich wracają te same problemy.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "jedno spójne otwarcie rozdziału, nie dwa warianty",
+              "d": false
+            },
+            {
+              "t": "strona tytułowa żywym tekstem z nazwiskiem autora, nie bitmapa",
+              "d": false
+            },
+            {
+              "t": "żaden krój spoza specyfikacji, także w znakach graficznych",
+              "d": false
+            },
+            {
+              "t": "wyliczenia dostarczone jako wyliczenia, nie akapit z półpauzami",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wpisz do zlecenia składu cztery ustalenia z góry",
+            "desc": "Braki ustalone na poprzedniej książce. Bez nich wracają te same problemy.",
+            "cmd": "",
+            "checks": [
+              "jedno spójne otwarcie rozdziału, nie dwa warianty",
+              "strona tytułowa żywym tekstem z nazwiskiem autora, nie bitmapa",
+              "żaden krój spoza specyfikacji, także w znakach graficznych",
+              "wyliczenia dostarczone jako wyliczenia, nie akapit z półpauzami"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-2",
+          "title": "Przygotuj body.typ zgodnie z zasadami",
+          "desc": "Nagłówki =/==/=== (nie + #strong[...]). Listy - item bez pustych linii między pozycjami. Puste linie to nowy akapit, uwaga na artefakty typu ---and. --- to em dash, #emph[]/_.._ kursywa, #strong[]/*..* pogrubienie.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "brak artefaktów konwersji",
+              "d": false
+            },
+            {
+              "t": "listy sklejone poprawnie",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przygotuj body.typ zgodnie z zasadami",
+            "desc": "Nagłówki =/==/=== (nie + #strong[...]). Listy - item bez pustych linii między pozycjami. Puste linie to nowy akapit, uwaga na artefakty typu ---and. --- to em dash, #emph[]/_.._ kursywa, #strong[]/*..* pogrubienie.",
+            "cmd": "",
+            "checks": [
+              "brak artefaktów konwersji",
+              "listy sklejone poprawnie"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-3",
+          "title": "Skompiluj PDF do druku",
+          "desc": "Jedno źródło, dwa wyjścia. book.typ trzyma ustawienia strony i typografii, body.typ samą treść.",
+          "cmd": "typst compile book.typ out.pdf",
+          "checks": [
+            {
+              "t": "kompilacja bez ostrzeżeń",
+              "d": false
+            },
+            {
+              "t": "liczba stron zanotowana",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Skompiluj PDF do druku",
+            "desc": "Jedno źródło, dwa wyjścia. book.typ trzyma ustawienia strony i typografii, body.typ samą treść.",
+            "cmd": "typst compile book.typ out.pdf",
+            "checks": [
+              "kompilacja bez ostrzeżeń",
+              "liczba stron zanotowana"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-4",
+          "title": "Zweryfikuj PDF narzędziami",
+          "desc": "Kontrola pliku przed wysłaniem do KDP. Kolumna emb w pdffonts musi być yes wszędzie.",
+          "cmd": "pdfinfo -box out.pdf; pdffonts out.pdf; pdfimages -list out.pdf; gs -o /dev/null -sDEVICE=inkcov out.pdf",
+          "checks": [
+            {
+              "t": "432×648 pt (6×9\")",
+              "d": false
+            },
+            {
+              "t": "TrimBox = BleedBox = MediaBox",
+              "d": false
+            },
+            {
+              "t": "fonty osadzone i zsubsetowane",
+              "d": false
+            },
+            {
+              "t": "farba K100 na stronach tekstowych",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zweryfikuj PDF narzędziami",
+            "desc": "Kontrola pliku przed wysłaniem do KDP. Kolumna emb w pdffonts musi być yes wszędzie.",
+            "cmd": "pdfinfo -box out.pdf; pdffonts out.pdf; pdfimages -list out.pdf; gs -o /dev/null -sDEVICE=inkcov out.pdf",
+            "checks": [
+              "432×648 pt (6×9\")",
+              "TrimBox = BleedBox = MediaBox",
+              "fonty osadzone i zsubsetowane",
+              "farba K100 na stronach tekstowych"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-5",
+          "title": "Sprawdź zgodność ze specyfikacją serii",
+          "desc": "Wzorzec zmierzony na wydanej książce, docs/07-spec-skladu-serii.md. Siatka i marginesy decydują o tym, czy seria wygląda jak seria.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "margines wewnętrzny 24,0 mm, zewnętrzny 22,0 mm, lustrzane",
+              "d": false
+            },
+            {
+              "t": "siatka 15 pt, 34 wiersze na stronę",
+              "d": false
+            },
+            {
+              "t": "Georgia 10/15 pt w tekście",
+              "d": false
+            },
+            {
+              "t": "każdy rozdział od strony nieparzystej (recto)",
+              "d": false
+            },
+            {
+              "t": "materiał wstępny: tytułowa, redakcyjna, motto, pusta, spis treści, wprowadzenie",
+              "d": false
+            },
+            {
+              "t": "pagina wyśrodkowana, brak na stronach pustych i otwarciach rozdziałów",
+              "d": false
+            },
+            {
+              "t": "obowiązkowa klauzula AI na stronie redakcyjnej",
+              "d": false
+            },
+            {
+              "t": "PDF/X-4, pojedyncze strony, bez znaczników cięcia",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Sprawdź zgodność ze specyfikacją serii",
+            "desc": "Wzorzec zmierzony na wydanej książce, docs/07-spec-skladu-serii.md. Siatka i marginesy decydują o tym, czy seria wygląda jak seria.",
+            "cmd": "",
+            "checks": [
+              "margines wewnętrzny 24,0 mm, zewnętrzny 22,0 mm, lustrzane",
+              "siatka 15 pt, 34 wiersze na stronę",
+              "Georgia 10/15 pt w tekście",
+              "każdy rozdział od strony nieparzystej (recto)",
+              "materiał wstępny: tytułowa, redakcyjna, motto, pusta, spis treści, wprowadzenie",
+              "pagina wyśrodkowana, brak na stronach pustych i otwarciach rozdziałów",
+              "obowiązkowa klauzula AI na stronie redakcyjnej",
+              "PDF/X-4, pojedyncze strony, bez znaczników cięcia"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-6",
+          "title": "Wygeneruj EPUB z tego samego źródła",
+          "desc": "PDF ma sztywny układ stron, Amazon odrzuca go jako non-reflowable. Kindle wymaga EPUB. Nie eksportować przez Worda ani Google Docs.",
+          "cmd": "sed -E -e 's/^=== /### /' -e 's/^== /## /' -e 's/^= /# /' -e 's/---/—/g' body.typ > source.md\ngrep -c '^# ' source.md\npandoc metadata.yaml source.md -o out.epub --toc --toc-depth=1 --split-level=1",
+          "checks": [
+            {
+              "t": "liczba # zgodna z liczbą rozdziałów plus wstęp",
+              "d": false
+            },
+            {
+              "t": "metadane z templates/metadata.yaml",
+              "d": false
+            },
+            {
+              "t": "okładki NIE wstawiamy do pliku EPUB",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wygeneruj EPUB z tego samego źródła",
+            "desc": "PDF ma sztywny układ stron, Amazon odrzuca go jako non-reflowable. Kindle wymaga EPUB. Nie eksportować przez Worda ani Google Docs.",
+            "cmd": "sed -E -e 's/^=== /### /' -e 's/^== /## /' -e 's/^= /# /' -e 's/---/—/g' body.typ > source.md\ngrep -c '^# ' source.md\npandoc metadata.yaml source.md -o out.epub --toc --toc-depth=1 --split-level=1",
+            "checks": [
+              "liczba # zgodna z liczbą rozdziałów plus wstęp",
+              "metadane z templates/metadata.yaml",
+              "okładki NIE wstawiamy do pliku EPUB"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s6-7",
+          "title": "Sprawdź EPUB w Kindle Previewerze",
+          "desc": "Osobny program. Bez tego nie wiemy, jak Kindle poskleja rozdziały.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "spis treści działa",
+              "d": false
+            },
+            {
+              "t": "rozdziały zaczynają się w dobrych miejscach",
+              "d": false
+            },
+            {
+              "t": "kursywa i pogrubienia zachowane",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Sprawdź EPUB w Kindle Previewerze",
+            "desc": "Osobny program. Bez tego nie wiemy, jak Kindle poskleja rozdziały.",
+            "cmd": "",
+            "checks": [
+              "spis treści działa",
+              "rozdziały zaczynają się w dobrych miejscach",
+              "kursywa i pogrubienia zachowane"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "num": "7",
+      "title": "Okładka i ISBN",
+      "short": "Okładka i ISBN",
+      "input": "liczba stron z etapu 6",
+      "output": "okladka.pdf + ISBN",
+      "doc": "docs/06-okladka-i-isbn.md",
+      "steps": [
+        {
+          "id": "s7-1",
+          "title": "Policz grzbiet z liczby stron",
+          "desc": "Kolejność jest nieodwracalna: skład się kończy, liczba stron jest znana, dopiero wtedy powstaje plik okładki.",
+          "cmd": "# liczba stron × 0,002252 cala (papier biały)\n# 142 strony = 0,3200\" = 8,13 mm",
+          "checks": [
+            {
+              "t": "skład zamknięty",
+              "d": false
+            },
+            {
+              "t": "grzbiet policzony i zapisany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Policz grzbiet z liczby stron",
+            "desc": "Kolejność jest nieodwracalna: skład się kończy, liczba stron jest znana, dopiero wtedy powstaje plik okładki.",
+            "cmd": "# liczba stron × 0,002252 cala (papier biały)\n# 142 strony = 0,3200\" = 8,13 mm",
+            "checks": [
+              "skład zamknięty",
+              "grzbiet policzony i zapisany"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s7-2",
+          "title": "Zamów u Toma materiały w rozdzielczości drukowej",
+          "desc": "Pliki z ChatGPT mają około 1536×1024 px, czyli 115 dpi, 40 procent tego, co potrzebne. Skalowaniem się tego nie uratuje. Renderowane wizualizacje 3D z cieniem to nie plik produkcyjny.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "tło 300 dpi, płaskie",
+              "d": false
+            },
+            {
+              "t": "zdjęcie autora w rozdzielczości drukowej",
+              "d": false
+            },
+            {
+              "t": "wszystkie teksty jako tekst, nie obrazek",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zamów u Toma materiały w rozdzielczości drukowej",
+            "desc": "Pliki z ChatGPT mają około 1536×1024 px, czyli 115 dpi, 40 procent tego, co potrzebne. Skalowaniem się tego nie uratuje. Renderowane wizualizacje 3D z cieniem to nie plik produkcyjny.",
+            "cmd": "",
+            "checks": [
+              "tło 300 dpi, płaskie",
+              "zdjęcie autora w rozdzielczości drukowej",
+              "wszystkie teksty jako tekst, nie obrazek"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s7-3",
+          "title": "Złóż pełną rozkładówkę",
+          "desc": "Szerokość 12,25 cala plus grzbiet, wysokość zawsze 9,25 cala. Cale na punkty mnożymy przez 72. Przy 300 dpi pełna rozkładówka to 3770×2775 px.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "spad 0,125\" na czterech krawędziach zewnętrznych",
+              "d": false
+            },
+            {
+              "t": "panele: tył 6,125\", grzbiet, przód 6,125\"",
+              "d": false
+            },
+            {
+              "t": "nic poza tłem nie wychodzi za linię cięcia",
+              "d": false
+            },
+            {
+              "t": "na grzbiecie nic bliżej niż 0,0625\" do zagięcia",
+              "d": false
+            },
+            {
+              "t": "bez znaczników cięcia i paserów",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Złóż pełną rozkładówkę",
+            "desc": "Szerokość 12,25 cala plus grzbiet, wysokość zawsze 9,25 cala. Cale na punkty mnożymy przez 72. Przy 300 dpi pełna rozkładówka to 3770×2775 px.",
+            "cmd": "",
+            "checks": [
+              "spad 0,125\" na czterech krawędziach zewnętrznych",
+              "panele: tył 6,125\", grzbiet, przód 6,125\"",
+              "nic poza tłem nie wychodzi za linię cięcia",
+              "na grzbiecie nic bliżej niż 0,0625\" do zagięcia",
+              "bez znaczników cięcia i paserów"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s7-4",
+          "title": "Zostaw miejsce na kod kreskowy Amazona",
+          "desc": "Domyślnie oddajemy kod Amazonowi. Własny kod wymaga każdorazowej weryfikacji, a pomyłka kosztuje cały nakład.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "strefa 2 × 1,2\" (50,8 × 30,5 mm)",
+              "d": false
+            },
+            {
+              "t": "odsunięta min. 0,25\" od grzbietu i linii cięcia",
+              "d": false
+            },
+            {
+              "t": "strefa pusta: bez tekstu, grafiki i białego prostokąta",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zostaw miejsce na kod kreskowy Amazona",
+            "desc": "Domyślnie oddajemy kod Amazonowi. Własny kod wymaga każdorazowej weryfikacji, a pomyłka kosztuje cały nakład.",
+            "cmd": "",
+            "checks": [
+              "strefa 2 × 1,2\" (50,8 × 30,5 mm)",
+              "odsunięta min. 0,25\" od grzbietu i linii cięcia",
+              "strefa pusta: bez tekstu, grafiki i białego prostokąta"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s7-5",
+          "title": "Weź ISBN z KDP i porównaj cyfra po cyfrze",
+          "desc": "Numer bierzemy ze strony konkretnego tytułu w KDP, nie z okładki, maila ani repo. Zdarzyło się przepisanie ISBN z innej książki. Kindle nie używa ISBN, dostaje ASIN.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "ISBN skopiowany z KDP",
+              "d": false
+            },
+            {
+              "t": "prefiks 979-8 nierozdzielony (979-8-195652-50-0, nie 979-81-...)",
+              "d": false
+            },
+            {
+              "t": "cyfry na okładce zgodne z KDP",
+              "d": false
+            },
+            {
+              "t": "osobny numer na każdy format",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Weź ISBN z KDP i porównaj cyfra po cyfrze",
+            "desc": "Numer bierzemy ze strony konkretnego tytułu w KDP, nie z okładki, maila ani repo. Zdarzyło się przepisanie ISBN z innej książki. Kindle nie używa ISBN, dostaje ASIN.",
+            "cmd": "",
+            "checks": [
+              "ISBN skopiowany z KDP",
+              "prefiks 979-8 nierozdzielony (979-8-195652-50-0, nie 979-81-...)",
+              "cyfry na okładce zgodne z KDP",
+              "osobny numer na każdy format"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s7-6",
+          "title": "Wyeksportuj i zweryfikuj plik okładki",
+          "desc": "Jeśli okładkę składa studio robiące wnętrze, ta kontrola i tak nas obowiązuje. Chrome zapisuje fonty jako Type 3, to pierwsze miejsce do sprawdzenia przy problemach.",
+          "cmd": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" \\\n  --headless --disable-gpu --no-pdf-header-footer \\\n  --virtual-time-budget=30000 \\\n  --user-data-dir=/tmp/chrome-cover \\\n  --print-to-pdf=okladka.pdf \\\n  \"file:///pelna/sciezka/okladka.html\"",
+          "checks": [
+            {
+              "t": "pdfinfo: jedna strona, rozmiar zgodny z rozkładówką",
+              "d": false
+            },
+            {
+              "t": "pdffonts: emb = yes wszędzie",
+              "d": false
+            },
+            {
+              "t": "pdfimages -list: x-ppi ≥ 300 (najłatwiej pominąć tę kontrolę)",
+              "d": false
+            },
+            {
+              "t": "pdftoppm -r 100 -png: podgląd wizualny obejrzany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wyeksportuj i zweryfikuj plik okładki",
+            "desc": "Jeśli okładkę składa studio robiące wnętrze, ta kontrola i tak nas obowiązuje. Chrome zapisuje fonty jako Type 3, to pierwsze miejsce do sprawdzenia przy problemach.",
+            "cmd": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" \\\n  --headless --disable-gpu --no-pdf-header-footer \\\n  --virtual-time-budget=30000 \\\n  --user-data-dir=/tmp/chrome-cover \\\n  --print-to-pdf=okladka.pdf \\\n  \"file:///pelna/sciezka/okladka.html\"",
+            "checks": [
+              "pdfinfo: jedna strona, rozmiar zgodny z rozkładówką",
+              "pdffonts: emb = yes wszędzie",
+              "pdfimages -list: x-ppi ≥ 300 (najłatwiej pominąć tę kontrolę)",
+              "pdftoppm -r 100 -png: podgląd wizualny obejrzany"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "num": "8",
+      "title": "Publikacja w KDP",
+      "short": "KDP",
+      "input": "out.pdf, okladka.pdf, out.epub",
+      "output": "książka w sprzedaży",
+      "doc": "docs/05-sklad-i-kdp.md",
+      "steps": [
+        {
+          "id": "s8-1",
+          "title": "Wgraj wnętrze i okładkę paperbacka",
+          "desc": "Bookshelf, przycisk trzech kropek, Edit paperback content. Okładka to jeden PDF: tył, grzbiet, przód, ze spadem, bez znaczników cięcia.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "wnętrze wgrane",
+              "d": false
+            },
+            {
+              "t": "okładka wgrana",
+              "d": false
+            },
+            {
+              "t": "format 6×9 cala wybrany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wgraj wnętrze i okładkę paperbacka",
+            "desc": "Bookshelf, przycisk trzech kropek, Edit paperback content. Okładka to jeden PDF: tył, grzbiet, przód, ze spadem, bez znaczników cięcia.",
+            "cmd": "",
+            "checks": [
+              "wnętrze wgrane",
+              "okładka wgrana",
+              "format 6×9 cala wybrany"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-2",
+          "title": "Uruchom Print Previewer i przeczytaj listę błędów",
+          "desc": "Sekcja Book Preview, przycisk Launch Previewer. Przeliczanie od kilkudziesięciu sekund do kilku minut. Błędy blokują publikację.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "zero błędów",
+              "d": false
+            },
+            {
+              "t": "ostrzeżenia rozpatrzone",
+              "d": false
+            },
+            {
+              "t": "typowe: za mały margines grzbietowy, zły rozmiar okładki, nieosadzony font",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Uruchom Print Previewer i przeczytaj listę błędów",
+            "desc": "Sekcja Book Preview, przycisk Launch Previewer. Przeliczanie od kilkudziesięciu sekund do kilku minut. Błędy blokują publikację.",
+            "cmd": "",
+            "checks": [
+              "zero błędów",
+              "ostrzeżenia rozpatrzone",
+              "typowe: za mały margines grzbietowy, zły rozmiar okładki, nieosadzony font"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-3",
+          "title": "Przekartkuj podgląd ręcznie",
+          "desc": "Previewer nie wyłapie tego, co widzi oko.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "rozdziały od prawej strony",
+              "d": false
+            },
+            {
+              "t": "numeracja poprawna",
+              "d": false
+            },
+            {
+              "t": "grzbiet na miejscu",
+              "d": false
+            },
+            {
+              "t": "strefa kodu kreskowego pusta",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Przekartkuj podgląd ręcznie",
+            "desc": "Previewer nie wyłapie tego, co widzi oko.",
+            "cmd": "",
+            "checks": [
+              "rozdziały od prawej strony",
+              "numeracja poprawna",
+              "grzbiet na miejscu",
+              "strefa kodu kreskowego pusta"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-4",
+          "title": "Zamów egzemplarz próbny",
+          "desc": "Dopiero papier pokazuje kolor, przesunięcie grzbietu i wejście tekstu w zszycie. Wgranie plików nie publikuje książki, dopóki nie klikniemy Publish.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "proof copy zamówiony",
+              "d": false
+            },
+            {
+              "t": "proof copy obejrzany",
+              "d": false
+            },
+            {
+              "t": "uwagi z papieru naniesione",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zamów egzemplarz próbny",
+            "desc": "Dopiero papier pokazuje kolor, przesunięcie grzbietu i wejście tekstu w zszycie. Wgranie plików nie publikuje książki, dopóki nie klikniemy Publish.",
+            "cmd": "",
+            "checks": [
+              "proof copy zamówiony",
+              "proof copy obejrzany",
+              "uwagi z papieru naniesione"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-5",
+          "title": "Wystaw wersję Kindle osobno",
+          "desc": "Kindle to osobny wpis: EPUB, nigdy PDF. Okładkę dodajemy przy uploadzie, nie w pliku.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "EPUB wgrany",
+              "d": false
+            },
+            {
+              "t": "okładka dodana w KDP",
+              "d": false
+            },
+            {
+              "t": "podgląd Kindle sprawdzony",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Wystaw wersję Kindle osobno",
+            "desc": "Kindle to osobny wpis: EPUB, nigdy PDF. Okładkę dodajemy przy uploadzie, nie w pliku.",
+            "cmd": "",
+            "checks": [
+              "EPUB wgrany",
+              "okładka dodana w KDP",
+              "podgląd Kindle sprawdzony"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-6",
+          "title": "Publish",
+          "desc": "Dopiero po kliknięciu Publish książka trafia do sprzedaży.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "paperback opublikowany",
+              "d": false
+            },
+            {
+              "t": "Kindle opublikowany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Publish",
+            "desc": "Dopiero po kliknięciu Publish książka trafia do sprzedaży.",
+            "cmd": "",
+            "checks": [
+              "paperback opublikowany",
+              "Kindle opublikowany"
+            ]
+          },
+          "notes": ""
+        },
+        {
+          "id": "s8-7",
+          "title": "Zamknij książkę w dokumentacji",
+          "desc": "Nowa wiedza wraca do docs/, a ten szablon dostaje poprawki, które będą prawdą także przy następnej książce.",
+          "cmd": "",
+          "checks": [
+            {
+              "t": "ksiazki/<tytul>.md zaktualizowany",
+              "d": false
+            },
+            {
+              "t": "docs/ uzupełnione",
+              "d": false
+            },
+            {
+              "t": "szablon pipeline wyeksportowany i zacommitowany",
+              "d": false
+            }
+          ],
+          "status": "todo",
+          "factory": {
+            "title": "Zamknij książkę w dokumentacji",
+            "desc": "Nowa wiedza wraca do docs/, a ten szablon dostaje poprawki, które będą prawdą także przy następnej książce.",
+            "cmd": "",
+            "checks": [
+              "ksiazki/<tytul>.md zaktualizowany",
+              "docs/ uzupełnione",
+              "szablon pipeline wyeksportowany i zacommitowany"
+            ]
+          },
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}
